@@ -1,0 +1,183 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #1a1a1a;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.language-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.lang-btn {
+    padding: 8px 16px;
+    border: 2px solid #4CAF50;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.lang-btn.active {
+    background: #4CAF50;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background: #2a2a2a;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.game-info {
+    margin-bottom: 30px;
+}
+
+.player-info {
+    margin-bottom: 20px;
+}
+
+.game-timer {
+    margin: 20px 0;
+}
+
+.timer-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid #4CAF50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    font-size: 24px;
+    background: #333;
+}
+
+.betting-controls {
+    margin: 20px 0;
+}
+
+#betAmount {
+    padding: 10px;
+    font-size: 18px;
+    width: 150px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+.bet-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.bet-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#betTai {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#betXiu {
+    background-color: #f44336;
+    color: white;
+}
+
+.bet-buttons button:hover {
+    opacity: 0.9;
+}
+
+.bet-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dice-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+    position: relative;
+    padding: 20px;
+}
+
+.dice {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    z-index: 1;
+}
+
+.dice-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.main-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease;
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.main-cover.revealed {
+    transform: scale(0);
+}
+
+.result {
+    font-size: 24px;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.waiting {
+    color: #FFC107;
+}
+
+.betting {
+    color: #2196F3;
+}
+
+.revealing {
+    color: #4CAF50;
+}

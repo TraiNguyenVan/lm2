@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài Xỉu Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>    <div class="language-switcher">
+        <button id="langEn" class="lang-btn active">EN</button>
+        <button id="langVi" class="lang-btn">VI</button>
+    </div>
+    <div class="container">
+        <div class="game-info">
+            <div class="player-info">
+                <h2 data-lang-en="Player Account" data-lang-vi="Tài Khoản">Player Account</h2>
+                <p><span data-lang-en="Balance" data-lang-vi="Số Dư">Balance</span>: $<span id="balance">1000</span></p>
+            </div>
+            <div class="game-timer">
+                <div class="timer-circle">
+                    <span id="timer">Waiting...</span>
+                </div>
+            </div>
+            <div class="betting-controls">
+                <input type="number" id="betAmount" min="10" max="1000" value="10" step="10">                <div class="bet-buttons">
+                    <button id="betTai" data-lang-en="Bet Tài (Over)" data-lang-vi="Đặt Tài">Bet Tài (Over)</button>
+                    <button id="betXiu" data-lang-en="Bet Xỉu (Under)" data-lang-vi="Đặt Xỉu">Bet Xỉu (Under)</button>
+                </div>
+            </div>
+        </div>
+          <div class="dice-container">
+            <div class="dice" id="dice1">
+                <img src="images/dice1.png" alt="Dice 1" class="dice-image">
+            </div>
+            <div class="dice" id="dice2">
+                <img src="images/dice1.png" alt="Dice 2" class="dice-image">
+            </div>
+            <div class="dice" id="dice3">
+                <img src="images/dice1.png" alt="Dice 3" class="dice-image">
+            </div>
+            <div class="main-cover">
+                <img src="images/cover.png" alt="Cover" class="cover-image">
+            </div>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+    <audio id="rollSound" src="sounds/roll.mp3"></audio>
+    <script src="game.js"></script>
+</body>
+</html>
