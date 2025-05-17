@@ -9,6 +9,14 @@ class TaiXiuGame {
         this.soundPlayed = false;
         this.seed = 0; // For consistent random numbers
         this.currentLang = 'en'; // Default language
+        this.revealed = false; // Add revealed flag
+        
+        // Game statistics
+        this.gameHistory = [];
+        this.winStreak = 0;
+        this.highScore = parseInt(localStorage.getItem('highScore')) || 1000;
+        this.taiCount = 0;
+        this.totalGames = 0;
 
         // Translations
         this.translations = {
@@ -46,8 +54,10 @@ class TaiXiuGame {
             document.getElementById('dice2'),
             document.getElementById('dice3')
         ];
-        this.rollSound = document.getElementById('rollSound');
-
+        this.rollSound = document.getElementById('rollSound');        // Load additional sounds
+        this.winSound = document.getElementById('winSound');
+        this.loseSound = document.getElementById('loseSound');
+        
         // Initialize
         this.init();
     }    init() {
@@ -112,20 +122,16 @@ class TaiXiuGame {
             const now = new Date();
             const seconds = now.getSeconds();
             
-            // Synchronize game phases based on real time
-            // 0-14: waiting phase
-            // 15-44: betting phase
-            // 45-59: revealing phase
             if (seconds < 15) {
                 if (this.gamePhase !== 'waiting') {
                     this.gamePhase = 'waiting';
-                    this.resetGame();
+                    this.showDicesForWaiting();
                 }
                 this.gameTimer = 15 - seconds;
             } else if (seconds < 45) {
                 if (this.gamePhase !== 'betting') {
                     this.gamePhase = 'betting';
-                    this.resetForBetting();
+                    this.hideDicesForBetting();
                 }
                 this.gameTimer = 45 - seconds;
             } else {
@@ -134,10 +140,23 @@ class TaiXiuGame {
                     this.generateResult();
                 }
                 this.gameTimer = 60 - seconds;
+                if (this.gameTimer <= 5 && !this.revealed) {
+                    this.revealResult();
+                }
             }
             
             this.updateDisplay();
         }, 1000);
+    }    showDicesForWaiting() {
+        this.diceElements.forEach(dice => dice.classList.add('visible'));
+        const mainCover = document.querySelector('.main-cover');
+        mainCover.classList.add('revealed');
+    }
+
+    hideDicesForBetting() {
+        this.diceElements.forEach(dice => dice.classList.remove('visible'));
+        const mainCover = document.querySelector('.main-cover');
+        mainCover.classList.remove('revealed');
     }    resetForBetting() {
         this.betAmount = 0;
         this.playerBet = '';
@@ -145,18 +164,14 @@ class TaiXiuGame {
         this.betXiuButton.disabled = false;
         this.resultElement.textContent = '';
         this.soundPlayed = false;
-    }
-
-    resetGame() {
+    }    resetGame() {
         this.betAmount = 0;
         this.playerBet = '';
         this.betTaiButton.disabled = false;
         this.betXiuButton.disabled = false;
         this.resultElement.textContent = '';
         this.soundPlayed = false;
-          // Reset main cover
-        const mainCover = document.querySelector('.main-cover');
-        mainCover.classList.remove('revealed');
+        this.revealed = false;
     }    generateResult() {
         // Generate a seed based on the current minute
         const now = new Date();
@@ -179,13 +194,21 @@ class TaiXiuGame {
             const img = dice.querySelector('.dice-image');
             img.src = `images/dice${this.diceValues[index]}.png`;
         });
-    }
+    }    revealResult() {
+        if (this.revealed) return; // Prevent multiple reveals
+        this.revealed = true;
 
-    revealResult() {
         if (!this.soundPlayed) {
             this.rollSound.play();
             this.soundPlayed = true;
-        }        // Reveal dice
+        }
+
+        // Make dice visible first
+        this.diceElements.forEach(dice => {
+            dice.classList.add('visible');
+        });
+        
+        // Remove the cover with animation
         const mainCover = document.querySelector('.main-cover');
         mainCover.classList.add('revealed');
 
@@ -193,14 +216,21 @@ class TaiXiuGame {
         const result = sum > 10 ? 'tai' : 'xiu';
         
         console.log(`Game Result: ${result.toUpperCase()} (Sum: ${sum})`);
-          // Calculate winnings
+        
+        // Update game history and stats first
+        this.updateGameHistory(result, sum);
+        this.updateGameStats(result);
+        
+        // Calculate winnings and show result
         if (this.playerBet === result) {
             this.balance += this.betAmount * 2;
             this.resultElement.textContent = this.translations[this.currentLang].youWon.replace('%s', sum);
             this.resultElement.style.color = '#4CAF50';
+            setTimeout(() => this.winSound.play(), 500); // Play win sound after reveal animation
         } else if (this.playerBet) {
             this.resultElement.textContent = this.translations[this.currentLang].youLost.replace('%s', sum);
             this.resultElement.style.color = '#f44336';
+            setTimeout(() => this.loseSound.play(), 500); // Play lose sound after reveal animation
         } else {
             this.resultElement.textContent = this.translations[this.currentLang].noBet.replace('%s', sum);
             this.resultElement.style.color = '#FFC107';
@@ -226,6 +256,51 @@ class TaiXiuGame {
         
         const message = this.translations[this.currentLang][messageKey].replace('%s', this.gameTimer);
         this.timerElement.textContent = message;
+    }
+
+    updateGameHistory(result, sum) {
+        // Add new result to history
+        this.gameHistory.unshift({ result, sum });
+        if (this.gameHistory.length > 10) {
+            this.gameHistory.pop();
+        }
+
+        // Update history display
+        const historyGrid = document.getElementById('historyGrid');
+        historyGrid.innerHTML = '';
+        this.gameHistory.forEach(item => {
+            const historyItem = document.createElement('div');
+            historyItem.className = `history-item history-${item.result}`;
+            historyItem.textContent = item.sum;
+            historyGrid.appendChild(historyItem);
+        });
+    }    updateGameStats(result) {
+        this.totalGames++;
+        if (result === 'tai') {
+            this.taiCount++;
+        }
+
+        // Update win streak
+        if (this.playerBet === result) {
+            this.winStreak++;
+            document.getElementById('winStreak').textContent = this.winStreak;
+            document.getElementById('winStreak').classList.add('winning-streak');
+        } else if (this.playerBet) {
+            this.winStreak = 0;
+            document.getElementById('winStreak').textContent = '0';
+            document.getElementById('winStreak').classList.remove('winning-streak');
+        }
+
+        // Update high score
+        if (this.balance > this.highScore) {
+            this.highScore = this.balance;
+            localStorage.setItem('highScore', this.highScore);
+            document.getElementById('highScore').textContent = this.highScore;
+        }
+
+        // Update Tài trend
+        const taiPercentage = (this.taiCount / this.totalGames) * 100;
+        document.getElementById('taiTrend').style.width = `${taiPercentage}%`;
     }
 }
 

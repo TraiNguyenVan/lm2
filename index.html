@@ -40,12 +40,36 @@
             </div>
             <div class="main-cover">
                 <img src="images/cover.png" alt="Cover" class="cover-image">
+            </div>        </div>
+
+        <div class="game-stats">
+            <div class="history-section">
+                <h3 data-lang-en="Last Results" data-lang-vi="Kết Quả Gần Đây">Last Results</h3>
+                <div class="history-grid" id="historyGrid"></div>
+            </div>
+            <div class="stats-section">
+                <div class="stat-box">
+                    <span data-lang-en="Win Streak" data-lang-vi="Chuỗi Thắng">Win Streak</span>
+                    <span id="winStreak">0</span>
+                </div>
+                <div class="stat-box">
+                    <span data-lang-en="High Score" data-lang-vi="Điểm Cao">High Score</span>
+                    <span id="highScore">1000</span>
+                </div>
+                <div class="trend-box">
+                    <span data-lang-en="Tài Trend" data-lang-vi="Xu Hướng Tài">Tài Trend</span>
+                    <div class="trend-bar">
+                        <div id="taiTrend" class="trend-fill"></div>
+                    </div>
+                </div>
             </div>
         </div>
-
+        
         <div class="result" id="result"></div>
     </div>
     <audio id="rollSound" src="sounds/roll.mp3"></audio>
+    <audio id="winSound" src="sounds/win.mp3"></audio>
+    <audio id="loseSound" src="sounds/lose.mp3"></audio>
     <script src="game.js"></script>
 </body>
 </html>
